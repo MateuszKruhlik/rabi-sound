@@ -1,0 +1,325 @@
+.collection {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+
+.collectionList {
+  display: grid;
+  gap: 4px;
+  max-height: 248px;
+  overflow-y: auto;
+  padding: 1px;
+}
+
+.collectionRow {
+  align-items: center;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.collectionMain {
+  justify-content: flex-start;
+  min-width: 0;
+  overflow: hidden;
+  padding-inline: 10px;
+}
+
+.collectionMainSelected {
+  border-color: color-mix(in oklab, var(--primary) 52%, transparent);
+  background: color-mix(in oklab, var(--primary) 14%, transparent);
+}
+
+.rowLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowMeta {
+  color: var(--muted-foreground);
+  font-size: 10px;
+  margin-left: auto;
+}
+
+.rowActions {
+  display: flex;
+  gap: 2px;
+}
+
+.collectionFooter {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 4px;
+}
+
+.logControl {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+
+.logReadout {
+  align-items: center;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.logInput {
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+}
+
+.logUnit {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.canvasRoot {
+  background: #0b0c0f;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.canvasSvg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.domPreview {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  transition: margin-left 180ms ease, width 180ms ease;
+  width: calc(100% - 320px);
+}
+
+.canvasRoot[data-rabi-sound-controls-side="left"] .domPreview {
+  margin-left: 320px;
+}
+
+.domGrid,
+.domPlayhead,
+.domWaveform,
+.domWaveformCenter {
+  pointer-events: none;
+  position: absolute;
+}
+
+.domGrid {
+  border-left: 1px solid rgb(255 255 255 / 7%);
+}
+
+.domTitle,
+.domMeta,
+.domBrand,
+.domCredit,
+.domRenderBadge,
+.domError {
+  pointer-events: none;
+  position: absolute;
+}
+
+.domTitle {
+  left: 22%;
+  top: 20%;
+}
+
+.domBrand::before {
+  color: rgb(247 247 248 / 92%);
+  content: attr(data-label);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.domCredit::before {
+  color: rgb(196 200 209 / 45%);
+  content: attr(data-label);
+  font-size: 10px;
+}
+
+.domTitle::before {
+  color: rgb(247 247 248 / 96%);
+  content: attr(data-label);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.domMeta {
+  left: 22%;
+  top: 23%;
+}
+
+.domMeta::before,
+.domTrackLabel::before {
+  color: rgb(196 200 209 / 58%);
+  content: attr(data-label);
+  font-size: 11px;
+}
+
+.domWaveformCenter {
+  border-top: 1px solid rgb(255 255 255 / 15%);
+}
+
+.domWaveform {
+  background: linear-gradient(90deg, rgb(124 92 255 / 34%), rgb(122 214 255 / 52%), rgb(124 92 255 / 34%));
+  filter: drop-shadow(0 0 1px rgb(175 220 255 / 90%));
+}
+
+.domPlayhead {
+  border-left: 2px solid rgb(151 128 255 / 95%);
+}
+
+.domTrack {
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 5px;
+  box-sizing: border-box;
+  position: absolute;
+}
+
+.domTrack[data-disabled="true"] {
+  opacity: 0.35;
+}
+
+.domTrackNoise,
+.domTrackTone {
+  border-radius: 4px;
+  bottom: 3px;
+  position: absolute;
+  top: 3px;
+}
+
+.domTrackTone {
+  background: rgb(124 92 255 / 42%);
+  border: 1px solid rgb(151 128 255 / 90%);
+}
+
+.domTrackNoise {
+  background: rgb(34 197 94 / 34%);
+  border: 1px solid rgb(34 197 94 / 85%);
+}
+
+.domTrackLabel {
+  left: 8px;
+  pointer-events: none;
+  position: absolute;
+  top: 2px;
+}
+
+.domRenderBadge {
+  background: rgb(255 255 255 / 8%);
+  border-radius: 999px;
+  right: 22%;
+  top: 20%;
+}
+
+.domRenderBadge::before {
+  color: rgb(196 200 209 / 65%);
+  content: attr(data-label);
+  display: block;
+  font-size: 10px;
+  padding: 5px 14px;
+}
+
+.domError {
+  bottom: 12px;
+  left: 22%;
+}
+
+.domError::before {
+  color: var(--destructive);
+  content: attr(data-label);
+  font-size: 11px;
+}
+
+.canvasGrid {
+  stroke: color-mix(in oklab, var(--foreground) 7%, transparent);
+  stroke-width: 1;
+}
+
+.waveformArea {
+  fill: color-mix(in oklab, var(--primary) 17%, transparent);
+  stroke: color-mix(in oklab, var(--primary) 88%, white 8%);
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.waveformCenter {
+  stroke: color-mix(in oklab, var(--foreground) 10%, transparent);
+  stroke-width: 1;
+}
+
+.playhead {
+  stroke: color-mix(in oklab, var(--primary) 92%, white 8%);
+  stroke-width: 2;
+}
+
+.trackLane {
+  fill: color-mix(in oklab, var(--foreground) 4%, transparent);
+  stroke: color-mix(in oklab, var(--foreground) 9%, transparent);
+  stroke-width: 1;
+}
+
+.trackTone {
+  fill: color-mix(in oklab, var(--primary) 38%, transparent);
+  stroke: color-mix(in oklab, var(--primary) 62%, transparent);
+  stroke-width: 1;
+}
+
+.trackNoise {
+  fill: color-mix(in oklab, #c084fc 34%, transparent);
+  stroke: color-mix(in oklab, #c084fc 58%, transparent);
+  stroke-width: 1;
+}
+
+.trackDisabled {
+  opacity: 0.34;
+}
+
+.canvasTitle {
+  fill: var(--foreground);
+  font-family: Inter Variable, Inter, sans-serif;
+  font-size: 22px;
+  font-weight: 560;
+}
+
+.canvasMeta {
+  fill: color-mix(in oklab, var(--foreground) 48%, transparent);
+  font-family: Inter Variable, Inter, sans-serif;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.trackLabel {
+  fill: color-mix(in oklab, var(--foreground) 68%, transparent);
+  font-family: Inter Variable, Inter, sans-serif;
+  font-size: 11px;
+}
+
+.renderBadge {
+  fill: color-mix(in oklab, var(--primary) 14%, transparent);
+  stroke: color-mix(in oklab, var(--primary) 34%, transparent);
+  stroke-width: 1;
+}
+
+.renderBadgeText {
+  fill: color-mix(in oklab, var(--primary) 86%, white 10%);
+  font-family: Inter Variable, Inter, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.errorText {
+  fill: var(--destructive);
+  font-family: Inter Variable, Inter, sans-serif;
+  font-size: 12px;
+}
