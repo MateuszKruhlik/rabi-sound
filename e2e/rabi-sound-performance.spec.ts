@@ -265,7 +265,7 @@ async function measureControlScenario(page: Page, scenarioId: string) {
         return;
       }
       if (target === "actions.preset") {
-        await field.getByRole("button", { name: "Add variation", exact: true }).click();
+        await field.getByRole("button", { name: "Randomize", exact: true }).click();
         return;
       }
       if (target === targets.pack) {

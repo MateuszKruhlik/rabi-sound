@@ -40,41 +40,46 @@ function reportExportFailure(label: string, error: unknown): void {
   });
 }
 
+export function applyPreset(
+  dispatch: Parameters<ToolcraftPanelActionHandler>[0]["dispatch"],
+  pack: SoundPackV1,
+  presetId: string,
+): void {
+  const activeSound = getActiveSound(pack);
+  const preset = createPresetRecipe(presetId as CuelumePresetId, activeSound.id);
+  const next = {
+    ...pack,
+    sounds: pack.sounds.map((sound) => (sound.id === activeSound.id ? preset : sound)),
+  };
+  setPack(dispatch, next, "Use preset");
+}
+
 export const handleStudioPanelAction: ToolcraftPanelActionHandler = (context) => {
   const pack = materializePackFromValues(context.state.values);
   const activeSound = getActiveSound(pack);
 
   switch (context.action.value) {
-    case "preset.apply": {
-      const presetId = String(context.state.values[targets.presetId] ?? "success") as CuelumePresetId;
-      const preset = createPresetRecipe(presetId, activeSound.id);
-      const next = {
-        ...pack,
-        sounds: pack.sounds.map((sound) => (sound.id === activeSound.id ? preset : sound)),
-      };
-      setPack(context.dispatch, next, "Use preset");
-      return;
-    }
-    case "variation.add": {
+    case "variation.randomize": {
       if (pack.sounds.length >= 32) return;
-      let seed = Number(context.state.values[targets.variationSeed] ?? 42) >>> 0;
-      let variation = createVariation(activeSound, {
-        intensity: Number(context.state.values[targets.variationIntensity] ?? 50) / 100,
-        seed,
-      });
+      const intensity = Number(context.state.values[targets.variationIntensity] ?? 50) / 100;
+      let seed = Math.floor(Math.random() * 10_000);
+      let variation = createVariation(activeSound, { intensity, seed });
       while (pack.sounds.some((sound) => sound.id === variation.id)) {
-        seed += 1;
-        variation = createVariation(activeSound, {
-          intensity: Number(context.state.values[targets.variationIntensity] ?? 50) / 100,
-          seed,
-        });
+        seed = (seed + 1) % 10_000;
+        variation = createVariation(activeSound, { intensity, seed });
       }
       const next = {
         ...pack,
         activeSoundId: variation.id,
         sounds: [...pack.sounds, variation],
       };
-      setPack(context.dispatch, next, "Add variation");
+      setPack(context.dispatch, next, "Randomize");
+      context.dispatch({
+        history: "skip",
+        target: targets.variationSeed,
+        type: "controls.setValue",
+        value: seed,
+      });
       return;
     }
     case "export.wav":

@@ -110,9 +110,7 @@ export async function interactWithRabiSoundControl(
     }
   }
   if (target === "actions.preset") {
-    const preset = await getToolcraftControlFieldByTarget(page, "editor.presetId");
-    await chooseDifferentOption(preset, page);
-    await control.getByRole("button", { name: "Use preset", exact: true }).click();
+    await control.getByRole("button", { name: "Randomize", exact: true }).click();
     return;
   }
 

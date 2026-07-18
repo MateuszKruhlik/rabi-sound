@@ -104,8 +104,7 @@ export const appSchema = defineToolcraft({
             },
             presetActions: {
               actions: [
-                { icon: "wand-sparkles", label: "Use preset", value: "preset.apply" },
-                { icon: "shuffle", label: "Add variation", value: "variation.add" },
+                { icon: "shuffle", label: "Randomize", value: "variation.randomize" },
               ],
               label: "Create cue",
               orderRole: "action",

@@ -13,6 +13,7 @@ import {
   materializePackFromValues,
   targets,
 } from "./editor-model";
+import { applyPreset } from "./panel-actions";
 import {
   getAudioPlaybackSnapshot,
   isPlaybackTimeOutOfSync,
@@ -109,6 +110,22 @@ export function RabiSoundCanvasPreview(): React.JSX.Element {
     document.addEventListener("pointerdown", unlock, { once: true });
     return () => document.removeEventListener("pointerdown", unlock);
   }, []);
+
+  // Selecting a Cuelume preset applies it to the active cue immediately — no separate
+  // "Use preset" click. The ref skips the initial mount (the default pack already is the
+  // success preset) and re-applies only when the chosen preset actually changes.
+  const autoAppliedPresetRef = React.useRef<string | null>(null);
+  React.useEffect(() => {
+    const presetId = state.values[targets.presetId];
+    if (typeof presetId !== "string") return;
+    if (autoAppliedPresetRef.current === null) {
+      autoAppliedPresetRef.current = presetId;
+      return;
+    }
+    if (presetId === autoAppliedPresetRef.current) return;
+    autoAppliedPresetRef.current = presetId;
+    applyPreset(dispatch, pack, presetId);
+  }, [dispatch, pack, state.values]);
 
   React.useEffect(() => {
     const generation = renderGeneration.current + 1;
