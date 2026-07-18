@@ -5,5 +5,5 @@ export { createDefaultSoundPack, createPresetRecipe, CUELUME_PRESET_IDS, CUELUME
 export type { CuelumePresetId } from "./presets";
 export { parseSoundPack, soundPackV1Schema, soundRecipeV1Schema } from "./schema";
 export type * from "./types";
-export { createVariation } from "./variation";
+export { createVariation, varyForPreview } from "./variation";
 export { encodeWav } from "./wav";

@@ -3,6 +3,7 @@ import type { ToolcraftCommand, ToolcraftState } from "@/toolcraft/runtime";
 import { createId } from "../audio/math";
 import { createDefaultSoundPack } from "../audio/presets";
 import { SOUND_PACK_SCHEMA } from "../audio/types";
+import { varyForPreview } from "../audio/variation";
 import type {
   NoiseLayerV1,
   SoundLayerV1,
@@ -237,6 +238,24 @@ function readPersistedPack(raw: unknown): SoundPackV1 {
   return createDefaultSoundPack();
 }
 
+// Seed + Variation intensity live-shape the ACTIVE cue: intensity 0 = the cue as authored,
+// higher = a seeded variation. Applied here (not baked) so preview, playback and export all
+// stay in sync and manual edits are preserved as the base the variation rides on.
+function applyVariationLens(pack: SoundPackV1, values: Record<string, unknown>): SoundPackV1 {
+  const intensity = numberValue(values, targets.variationIntensity, 0) / 100;
+  if (intensity <= 0) {
+    return pack;
+  }
+  const seed = numberValue(values, targets.variationSeed, 0);
+  const activeId = getActiveSound(pack).id;
+  return {
+    ...pack,
+    sounds: pack.sounds.map((sound) =>
+      sound.id === activeId ? varyForPreview(sound, { intensity, seed }) : sound,
+    ),
+  };
+}
+
 export function materializePackFromValues(values: Record<string, unknown>): SoundPackV1 {
   const pack = readPersistedPack(values[targets.pack]);
   const activeSound = getActiveSound(pack);
@@ -251,7 +270,7 @@ export function materializePackFromValues(values: Record<string, unknown>): Soun
   };
 
   if (loadedSoundId !== activeSound.id) {
-    return pack;
+    return applyVariationLens(pack, values);
   }
 
   const selectedLayerId = values[targets.selectedLayerId];
@@ -285,7 +304,7 @@ export function materializePackFromValues(values: Record<string, unknown>): Soun
   pack.sounds = pack.sounds.map((sound) =>
     sound.id === materializedSound.id ? materializedSound : sound,
   );
-  return pack;
+  return applyVariationLens(pack, values);
 }
 
 export function commitActiveValues(state: ToolcraftState): SoundPackV1 {

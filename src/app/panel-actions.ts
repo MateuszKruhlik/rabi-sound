@@ -5,7 +5,7 @@ import type { ToolcraftPanelActionHandler } from "@/toolcraft/runtime/react";
 import {
   createPresetRecipe,
   createRecipeJson,
-  createVariation,
+  CUELUME_PRESET_IDS,
   encodeWav,
   exportSoundPackZip,
   getPackFileName,
@@ -60,25 +60,17 @@ export const handleStudioPanelAction: ToolcraftPanelActionHandler = (context) =>
 
   switch (context.action.value) {
     case "variation.randomize": {
-      if (pack.sounds.length >= 32) return;
-      const intensity = Number(context.state.values[targets.variationIntensity] ?? 50) / 100;
-      let seed = Math.floor(Math.random() * 10_000);
-      let variation = createVariation(activeSound, { intensity, seed });
-      while (pack.sounds.some((sound) => sound.id === variation.id)) {
-        seed = (seed + 1) % 10_000;
-        variation = createVariation(activeSound, { intensity, seed });
-      }
-      const next = {
-        ...pack,
-        activeSoundId: variation.id,
-        sounds: [...pack.sounds, variation],
-      };
-      setPack(context.dispatch, next, "Randomize");
+      // Jump the active cue to a fresh sound: a different Cuelume preset + a new seed.
+      // The preset auto-applies (canvas effect) and Seed/Intensity shape it live.
+      const current = String(context.state.values[targets.presetId] ?? "success");
+      const candidates = CUELUME_PRESET_IDS.filter((presetId) => presetId !== current);
+      const nextPreset =
+        candidates[Math.floor(Math.random() * candidates.length)] ?? current;
+      context.dispatch({ target: targets.presetId, type: "controls.setValue", value: nextPreset });
       context.dispatch({
-        history: "skip",
         target: targets.variationSeed,
         type: "controls.setValue",
-        value: seed,
+        value: Math.floor(Math.random() * 10_000),
       });
       return;
     }

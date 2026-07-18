@@ -84,3 +84,23 @@ export function createVariation(
     source: undefined,
   };
 }
+
+// A non-destructive variation for live preview/export of the ACTIVE cue: keeps the cue's
+// identity (id, name, layer ids, Cuelume source metadata) so selection/matching/attribution
+// stay intact, and only varies the numeric parameters. Used by the Seed / Intensity controls.
+export function varyForPreview(
+  source: SoundRecipeV1,
+  options: VariationOptions,
+): SoundRecipeV1 {
+  const varied = createVariation(source, options);
+  return {
+    ...varied,
+    id: source.id,
+    name: source.name,
+    source: source.source,
+    layers: varied.layers.map((layer, index) => ({
+      ...layer,
+      id: source.layers[index]?.id ?? layer.id,
+    })),
+  };
+}
