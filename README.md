@@ -2,6 +2,8 @@
 
 *Design and export clean, royalty-free UI sound effects in your browser — local-first, no account, no telemetry.*
 
+**Try it live → [rabi-sound.vercel.app](https://rabi-sound.vercel.app)**
+
 https://github.com/user-attachments/assets/c48f7bd9-043e-48c2-967c-2bf4ca43b9ea
 
 Rabi Sound is a local-first browser editor for short procedural UI sounds by Rabituza Studio. It turns tone and filtered-noise layers into production-ready WAV assets without uploading audio or requiring a backend.
