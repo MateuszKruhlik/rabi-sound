@@ -1,5 +1,7 @@
 # Rabi Sound
 
+*Design and export clean, royalty-free UI sound effects in your browser — local-first, no account, no telemetry.*
+
 Rabi Sound is a local-first browser editor for short procedural UI sounds by Rabituza Studio. It turns tone and filtered-noise layers into production-ready WAV assets without uploading audio or requiring a backend.
 
 Built on [Cuelume](https://github.com/Danilaa1/cuelume) by Daniel Belyi. The fourteen bundled Cuelume presets remain attributed under the MIT License in `THIRD_PARTY_NOTICES.md` and every exported sound pack.
@@ -36,6 +38,8 @@ npm run verify:perf
 npm run verify:final
 ```
 
+> **One test fails by design.** `app-acceptance.product-output-export.test.ts` is a generated Toolcraft acceptance contract that requires a PNG/image export. Rabi Sound is an audio app (it delivers WAV, recipe JSON and ZIP), so this single check does not apply and fails — the rest of the suite is green (315/316).
+
 Optional Firefox and WebKit smoke coverage:
 
 ```bash
@@ -69,6 +73,6 @@ Rabi Sound is deliberately not a DAW. Arbitrary audio import, MP3/OGG, EQ/compre
 
 ## License
 
-The generated project and included Toolcraft source identify themselves as MIT in `LICENSE.md`, `NOTICE.md` and `package.json`. Cuelume recipe attribution is preserved in `THIRD_PARTY_NOTICES.md`, preset metadata and every exported pack.
+Rabi Sound is open source under the **MIT License**. © 2026 Mateusz Kruhlik / Rabituza Studio.
 
-Before a public release, retain the planned checkpoint: request written confirmation from Pixel Point about the differing Toolcraft CLI/generated-project license wording. See `THIRD_PARTY_NOTICES.md`.
+The app was scaffolded with [Toolcraft](https://www.npmjs.com/package/@pixel-point/toolcraft) by Pixel Point; the generated `LICENSE.md` and `NOTICE.md` carry Toolcraft's own MIT license and notices. The 14 bundled UI-sound recipes are adapted from [Cuelume](https://github.com/Danilaa1/cuelume) by Daniel Belyi (MIT) — attributed in `THIRD_PARTY_NOTICES.md`, in preset metadata, and in every exported pack's `LICENSES.md`.

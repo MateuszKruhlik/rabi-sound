@@ -1,6 +1,7 @@
 import type { ToolcraftCommand, ToolcraftState } from "@/toolcraft/runtime";
 
 import { createId } from "../audio/math";
+import { createDefaultSoundPack } from "../audio/presets";
 import { SOUND_PACK_SCHEMA } from "../audio/types";
 import type {
   NoiseLayerV1,
@@ -222,9 +223,22 @@ function materializeSelectedLayer(
   };
 }
 
+function readPersistedPack(raw: unknown): SoundPackV1 {
+  if (
+    raw !== null &&
+    typeof raw === "object" &&
+    Array.isArray((raw as SoundPackV1).sounds) &&
+    (raw as SoundPackV1).sounds.length > 0
+  ) {
+    return structuredClone(raw as SoundPackV1);
+  }
+  // Corrupt, empty, or missing persisted pack (e.g. hand-edited localStorage): recover to a
+  // valid default instead of white-screening the app on load.
+  return createDefaultSoundPack();
+}
+
 export function materializePackFromValues(values: Record<string, unknown>): SoundPackV1 {
-  const sourcePack = values[targets.pack] as SoundPackV1;
-  const pack = structuredClone(sourcePack);
+  const pack = readPersistedPack(values[targets.pack]);
   const activeSound = getActiveSound(pack);
   const loadedSoundId = values[targets.loadedSoundId];
 

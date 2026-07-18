@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 import type { ToolcraftPanelActionHandler } from "@/toolcraft/runtime/react";
 
 import {
@@ -29,6 +31,13 @@ function setPack(
   dispatch({ label, target: targets.pack, type: "controls.setValue", value: pack });
   dispatchEditorSnapshot(dispatch, pack);
   dispatch({ currentTimeSeconds: 0, type: "timeline.setCurrentTime" });
+}
+
+function reportExportFailure(label: string, error: unknown): void {
+  console.error(`Rabi Sound ${label} failed`, error);
+  toast.error(`${label} failed`, {
+    description: error instanceof Error ? error.message : "Unexpected error while exporting.",
+  });
 }
 
 export const handleStudioPanelAction: ToolcraftPanelActionHandler = (context) => {
@@ -69,15 +78,25 @@ export const handleStudioPanelAction: ToolcraftPanelActionHandler = (context) =>
       return;
     }
     case "export.wav":
-      return renderSound(activeSound, pack.export).then((rendered) => {
-        downloadBytes(
-          encodeWav(rendered, pack.export),
-          `${sanitizeFileStem(activeSound.name)}.wav`,
-          "audio/wav",
-        );
-      });
+      return renderSound(activeSound, pack.export)
+        .then((rendered) => {
+          downloadBytes(
+            encodeWav(rendered, pack.export),
+            `${sanitizeFileStem(activeSound.name)}.wav`,
+            "audio/wav",
+          );
+        })
+        .catch((error: unknown) => reportExportFailure("WAV export", error));
     case "export.recipe":
-      downloadBytes(createRecipeJson(activeSound), getRecipeFileName(activeSound), "application/json");
+      try {
+        downloadBytes(
+          createRecipeJson(activeSound),
+          getRecipeFileName(activeSound),
+          "application/json",
+        );
+      } catch (error) {
+        reportExportFailure("Recipe export", error);
+      }
       return;
     case "export.pack":
       return exportSoundPackZip(pack, (progress) => {
@@ -86,7 +105,9 @@ export const handleStudioPanelAction: ToolcraftPanelActionHandler = (context) =>
         context.reportProgress(
           phaseOffset + phaseWeight * (progress.completed / Math.max(1, progress.total)),
         );
-      }).then((bytes) => downloadBytes(bytes, getPackFileName(pack), "application/zip"));
+      })
+        .then((bytes) => downloadBytes(bytes, getPackFileName(pack), "application/zip"))
+        .catch((error: unknown) => reportExportFailure("Pack export", error));
     default:
       return;
   }

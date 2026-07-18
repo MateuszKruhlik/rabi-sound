@@ -245,7 +245,7 @@ export function RabiSoundCanvasPreview(): React.JSX.Element {
         data-rabi-sound-timeline-looping={String(state.timeline.isLooping)}
         data-rabi-sound-timeline-playing={String(state.timeline.isPlaying)}
         data-rabi-sound-timeline-time={state.timeline.currentTimeSeconds.toFixed(3)}
-        data-rabi-sound-render-state={rendering ? "rendering" : "ready"}
+        data-rabi-sound-render-state={rendering ? "rendering" : renderError ? "error" : "ready"}
         data-rabi-sound-render-generation={String(renderGeneration.current)}
         aria-label={`Rabi Sound: ${activeSound.name} procedural waveform and synthesis layers`}
         className={styles.domPreview}

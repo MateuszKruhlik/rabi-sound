@@ -12,10 +12,13 @@ export function encodeWav(sound: RenderedSound, settings: ExportSettingsV1): Uin
   const bytesPerSample = settings.bitDepth / 8;
   const blockAlign = channels * bytesPerSample;
   const dataSize = frameCount * blockAlign;
-  const bytes = new Uint8Array(44 + dataSize);
+  // RIFF chunks with an odd byte length must be padded to an even boundary with a
+  // trailing 0x00. This only happens for 24-bit mono with an odd frame count.
+  const padByte = dataSize % 2;
+  const bytes = new Uint8Array(44 + dataSize + padByte);
   const view = new DataView(bytes.buffer);
   writeAscii(bytes, 0, "RIFF");
-  view.setUint32(4, 36 + dataSize, true);
+  view.setUint32(4, 36 + dataSize + padByte, true);
   writeAscii(bytes, 8, "WAVE");
   writeAscii(bytes, 12, "fmt ");
   view.setUint32(16, 16, true);

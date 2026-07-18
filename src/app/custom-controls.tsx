@@ -282,10 +282,13 @@ function LogSliderControl(
         max={1_000}
         min={0}
         onValueChange={(position) =>
-          props.setValue(fromPosition(Number(position)), {
-            history: "merge",
-            historyGroup: `log-slider:${props.controlId}`,
-          })
+          props.setValue(
+            Math.min(maximum, Math.max(minimum, fromPosition(Number(position)))),
+            {
+              history: "merge",
+              historyGroup: `log-slider:${props.controlId}`,
+            },
+          )
         }
         step={1}
         value={toPosition(value)}

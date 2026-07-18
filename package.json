@@ -1,5 +1,24 @@
 {
   "name": "rabi-sound",
+  "version": "0.1.0",
+  "description": "Local-first browser generator for short procedural UI sound effects (WAV) — by Rabituza Studio, built on Cuelume.",
+  "author": "Mateusz Kruhlik / Rabituza Studio",
+  "homepage": "https://github.com/MateuszKruhlik/rabi-sound",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MateuszKruhlik/rabi-sound"
+  },
+  "keywords": [
+    "ui-sounds",
+    "sound-effects",
+    "sound-design",
+    "web-audio",
+    "wav",
+    "generator"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "private": true,
   "license": "MIT",
   "type": "module",
