@@ -2,6 +2,10 @@
 
 *Design and export clean, royalty-free UI sound effects in your browser — local-first, no account, no telemetry.*
 
+![Rabi Sound demo](docs/demo.gif)
+
+▶️ **[Watch the full demo with sound →](docs/demo.mp4)**
+
 Rabi Sound is a local-first browser editor for short procedural UI sounds by Rabituza Studio. It turns tone and filtered-noise layers into production-ready WAV assets without uploading audio or requiring a backend.
 
 Built on [Cuelume](https://github.com/Danilaa1/cuelume) by Daniel Belyi. The fourteen bundled Cuelume presets remain attributed under the MIT License in `THIRD_PARTY_NOTICES.md` and every exported sound pack.
