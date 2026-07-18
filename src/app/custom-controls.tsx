@@ -15,6 +15,7 @@ import type {
   ToolcraftCustomControlRendererProps,
 } from "@/toolcraft/runtime/react";
 
+import { createPresetRecipe, CUELUME_PRESET_IDS, type CuelumePresetId } from "../audio/presets";
 import { MAX_CUES_PER_PACK, MAX_LAYERS_PER_CUE, type SoundPackV1 } from "../audio/types";
 import {
   commitActiveValues,
@@ -90,6 +91,23 @@ function CueLibraryControl(
     dispatchEditorSnapshot(props.dispatch, next);
   }
 
+  function addCue(): void {
+    const committed = commitActiveValues(props.state);
+    if (committed.sounds.length >= MAX_CUES_PER_PACK) return;
+    // Seed the new cue from the currently chosen Cuelume preset; picking a different
+    // preset afterwards auto-applies to it (and audition-on-select plays it right away).
+    const chosen = String(props.state.values[targets.presetId] ?? "success");
+    const presetId = (CUELUME_PRESET_IDS as readonly string[]).includes(chosen)
+      ? (chosen as CuelumePresetId)
+      : "success";
+    const id = `cue-${Date.now().toString(36)}`;
+    const cue = createPresetRecipe(presetId, id);
+    const next = { ...committed, activeSoundId: id, sounds: [...committed.sounds, cue] };
+    props.setValue(next, { history: "record" });
+    dispatchEditorSnapshot(props.dispatch, next);
+    props.dispatch({ currentTimeSeconds: 0, type: "timeline.setCurrentTime" });
+  }
+
   return (
     <div className={styles.collection} data-rabi-sound-cue-library="">
       <div className={styles.collectionList}>
@@ -124,6 +142,16 @@ function CueLibraryControl(
             </div>
           );
         })}
+      </div>
+      <div className={styles.collectionFooter}>
+        <Button
+          disabled={pack.sounds.length >= MAX_CUES_PER_PACK}
+          onClick={addCue}
+          size="sm"
+          variant="outline"
+        >
+          <PlusIcon /> New cue
+        </Button>
       </div>
     </div>
   );
