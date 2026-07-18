@@ -150,7 +150,7 @@ function CueLibraryControl(
           size="sm"
           variant="outline"
         >
-          <PlusIcon /> New cue
+          <PlusIcon /> New sound
         </Button>
       </div>
     </div>

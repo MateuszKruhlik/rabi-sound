@@ -14,7 +14,7 @@ The initial sound pack contains the Cuelume `success` preset. The Preset Browser
 
 ## What it does
 
-- Compose up to 32 cues with up to 16 Tone or Noise layers per cue.
+- Compose up to 32 sounds with up to 16 Tone or Noise layers per sound.
 - Edit timing, envelope, pitch/glide, noise filtering, gain, pan and shimmer.
 - Create deterministic, non-destructive variations from a seed and intensity.
 - Preview the exact render path used by export.

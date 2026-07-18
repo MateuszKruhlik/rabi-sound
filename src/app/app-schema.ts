@@ -39,10 +39,10 @@ export const appSchema = defineToolcraft({
             },
             cueLibrary: {
               defaultValue: defaultSoundPack,
-              label: "Cues",
+              label: "Sounds",
               orderRole: "primary",
               performanceReason:
-                "Selecting, ordering, duplicating, or removing a cue changes the active procedural output.",
+                "Selecting, ordering, duplicating, or removing a sound changes the active procedural output.",
               performanceRole: "responsiveness",
               target: targets.pack,
               type: "cueLibrary",
@@ -50,7 +50,7 @@ export const appSchema = defineToolcraft({
             cueName: {
               commitMode: "content",
               defaultValue: editorDefaults[targets.cueName],
-              label: "Cue name",
+              label: "Sound name",
               orderRole: "input",
               performanceReason: responsivenessReason,
               performanceRole: "responsiveness",
@@ -106,10 +106,10 @@ export const appSchema = defineToolcraft({
               actions: [
                 { icon: "shuffle", label: "Randomize", value: "variation.randomize" },
               ],
-              label: "Create cue",
+              label: "Create sound",
               orderRole: "action",
               performanceReason:
-                "Applying a preset or creating a variation renders a new procedural cue.",
+                "Applying a preset or creating a variation renders a new procedural sound.",
               performanceRole: "responsiveness",
               target: "actions.preset",
               type: "actions",
@@ -124,7 +124,7 @@ export const appSchema = defineToolcraft({
               label: "Synthesis layers",
               orderRole: "primary",
               performanceReason:
-                "Layer selection, visibility, ordering, creation, and deletion all change the rendered cue.",
+                "Layer selection, visibility, ordering, creation, and deletion all change the rendered sound.",
               performanceRole: "responsiveness",
               target: targets.selectedLayerId,
               type: "layerStack",
