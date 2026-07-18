@@ -76,6 +76,38 @@ export function stopAudioPlayback(): void {
   activePlayback = null;
 }
 
+// --- Audition (select-to-hear) -------------------------------------------------------------
+// A lightweight one-shot preview used when the user selects a cue or preset while the
+// timeline transport is stopped. Kept fully separate from the transport playback above:
+// it never touches activePlayback or playbackStartCount, so the playhead sync and the
+// data-rabi-sound-audio-* evidence attributes are unaffected.
+
+let auditionSource: AudioBufferSourceNode | null = null;
+
+export function stopAuditionPlayback(): void {
+  if (!auditionSource) return;
+  try {
+    auditionSource.stop();
+  } catch {
+    // The source may already have reached its natural end.
+  }
+  auditionSource = null;
+}
+
+export async function auditionSound(sound: RenderedSound): Promise<void> {
+  const context = getSharedAudioContext();
+  await unlockAudioPlayback();
+  stopAuditionPlayback();
+  const source = context.createBufferSource();
+  source.buffer = createAudioBuffer(sound, context);
+  source.connect(context.destination);
+  source.start(0);
+  auditionSource = source;
+  source.addEventListener("ended", () => {
+    if (auditionSource === source) auditionSource = null;
+  });
+}
+
 export async function startAudioPlayback(
   sound: RenderedSound,
   offsetSeconds: number,
@@ -84,6 +116,7 @@ export async function startAudioPlayback(
   const context = getSharedAudioContext();
   await unlockAudioPlayback();
   stopAudioPlayback();
+  stopAuditionPlayback();
   const source = context.createBufferSource();
   const playbackSound = alignRenderedSoundToPlaybackDuration(
     sound,

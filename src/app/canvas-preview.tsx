@@ -15,10 +15,12 @@ import {
 } from "./editor-model";
 import { applyPreset } from "./panel-actions";
 import {
+  auditionSound,
   getAudioPlaybackSnapshot,
   isPlaybackTimeOutOfSync,
   startAudioPlayback,
   stopAudioPlayback,
+  stopAuditionPlayback,
   unlockAudioPlayback,
 } from "./playback";
 import styles from "./studio.module.css";
@@ -127,6 +129,13 @@ export function RabiSoundCanvasPreview(): React.JSX.Element {
     applyPreset(dispatch, pack, presetId);
   }, [dispatch, pack, state.values]);
 
+  // Audition-on-select: selecting a different cue or preset plays the new sound once,
+  // sample-browser style (Splice/Ableton: selection = audition). Only while the timeline
+  // transport is stopped — a running transport already swaps renders in live.
+  const auditionKey = `${activeSound.id}|${String(state.values[targets.presetId] ?? "")}`;
+  const previousAuditionKey = React.useRef<string | null>(null);
+  const timelinePlaying = state.timeline.isPlaying;
+
   React.useEffect(() => {
     const generation = renderGeneration.current + 1;
     renderGeneration.current = generation;
@@ -141,6 +150,12 @@ export function RabiSoundCanvasPreview(): React.JSX.Element {
           setRendered(nextRendered);
           setPeaks(renderWaveformPeaks(nextRendered, Math.min(520, Math.round(width / 2))));
           setRendering(false);
+          const selectionChanged =
+            previousAuditionKey.current !== null && previousAuditionKey.current !== auditionKey;
+          previousAuditionKey.current = auditionKey;
+          if (selectionChanged && !timelinePlaying) {
+            void auditionSound(nextRendered).catch(() => undefined);
+          }
         })
         .catch((error: unknown) => {
           if (renderGeneration.current !== generation) return;
@@ -219,7 +234,13 @@ export function RabiSoundCanvasPreview(): React.JSX.Element {
     state.timeline.isPlaying,
   ]);
 
-  React.useEffect(() => () => stopAudioPlayback(), []);
+  React.useEffect(
+    () => () => {
+      stopAudioPlayback();
+      stopAuditionPlayback();
+    },
+    [],
+  );
 
   const waveformClipPath = createWaveformClipPath(peaks);
   const playheadX =
